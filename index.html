@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>ISFT Nº151 - Tecnicatura Superior en Análisis de Sistemas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #000;
+      overflow-x: hidden;
+    }
+
+    #background-video {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: -1;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      padding: 3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      background: #1c1c1ccc;
+      border-radius: 16px;
+      padding: 1rem;
+      color: #f0f0f0;
+      box-shadow: 0 0 12px #00000088;
+      backdrop-filter: blur(6px);
+      cursor: pointer;
+      transition: transform 0.3s ease, opacity 0.5s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card img.thumbnail {
+      width: 100%;
+      height: 300px;
+      border-radius: 12px;
+      margin-bottom: 0.8rem;
+    }
+
+    .card h2 {
+      margin: 0 0 0.4rem;
+      font-size: 1.1rem;
+    }
+
+    .card p {
+      margin: 0 0 0.6rem;
+      font-size: 0.95rem;
+      color: #ccc;
+    }
+
+    .tech-icons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tech-icons img {
+      width: 24px;
+      height: 24px;
+      filter: brightness(1.2);
+    }
+
+    .card:hover {
+      transform: translateY(-5px) scale(1.02);
+    }
+
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .modal video {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 12px;
+      z-index: 1000;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 30px;
+      right: 40px;
+      background: #ff4444;
+      color: white;
+      border: none;
+      font-size: 2rem;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: black;
+      color: white;
+      z-index: 2;
+    }
+
+    .isft-logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      height: 128px;
+      width: 360px;
+    }
+
+    .isft-qr {
+      font-size: 1.5em;
+      font-weight: bold;
+     height: 128px;
+      width: 128px;
+      text-align: center;
+      background-color: white;
+    }
+
+    .isft-qr-share {
+      font-size: 1.5em;
+      font-weight: bold;
+     height: 128px;
+      width: 128px;
+      text-align: center;
+      background-color: white;
+    }
+
+    .nav-text {
+      font-size: 3em;
+     font-family: "Oswald", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: bold;
+      font-style: normal;
+    }
+
+    /* Espacio de relleno para que no tape el contenido */
+    .content {
+      padding-top: 190px; /* Igual o mayor a la altura del navbar */
+    }
+
+    /* Contenido de prueba para hacer scroll */
+    .section {
+      height: 1000px;
+      background: linear-gradient(to bottom, #f0f0f0, #ccc);
+    }
+
+  </style>
+</head>
+<body>
+
+   <div class="navbar">
+    <img class="isft-logo" src="assets/isft.png">
+    <div class="nav-text">Tecnicatura Superior en Análisis de Sistemas</div>
+    <div>
+      <img class="isft-qr" src="assets/qrinscripcion.png">
+      <div style="text-align: center; text-wrap: wrap;">Inscripciones</div>
+    </div>
+
+    <div>
+      <img class="isft-qr-share" src="assets/shareqr.png">
+      <div style="text-align: center; text-wrap: wrap;">Compartir WEB</div>
+    </div>
+    
+  </div>
+
+  <video id="background-video" autoplay muted loop>
+    <source src="videos/background.mp4" type="video/mp4">
+    Tu navegador no soporta videos HTML5.
+  </video>
+  <div class="overlay"></div>
+
+
+  <div class="gallery content">
+
+     <div class="card" data-video="videos/institucional.mp4">
+      <img class="thumbnail" src="assets/institucional.png" alt="Miniatura Proyecto 3">
+      <h2>¡Este 2027 estudiá Análisis de Sistemas en ISFT N°151!</h2>
+      <a ref="https://isft151.edu.ar/inscripciones.html"> </a>
+      <p>Modalidad híbrida 70% virtual - 30% presencial. Aprendé a programar con tecnologías contemporáneas (JS, Python, C++), bases de datos. Principios de diseño. Arquitectura de software. Inglés técnico y conversacional. Trabajo en repositorios Git. Prácticas Profesionalizantes con simulación de entornos de trabajo reales (empresa simulada). Proyectos de extensión e Investigación y Desarrollo.
+      </p>
+    </div>
+
+
+    <div class="card" data-video="videos/fairlytale.mp4">
+      <img class="thumbnail" src="assets/fairlytale.png" alt="Miniatura Proyecto 3">
+      <h2>Fairly Tale</h2>
+      <p>Desarrollado por: K. Rudenick, Y. Alves</p>
+      <p>Fairly Tale es un videojuego individual 2D online, estilo RPG vintage construído completamente desde cero. Posee mapas interactivos en donde cada personaje de la ciudad puede ofrecer misiones a cumplir dentro del escenario. El protagonista debe recolectar diferentes tipos de recursos para satisfacer las misiones y avanzar en la historia. Toda la mecánica del juego fue desarrollada íntegramente desde cero con fines académicos desde la manipulación de gráficos, máquina de estados, cámara, animaciones, detección de colisiones y persistencia de partidas guardadas en servidor.
+
+        <br><br>Tecnologías: WebComponentsJS, Canvas2D, Node.js</p>
+      <div class="tech-icons">
+        <img src="assets/icons/javascript.svg" alt="JavaScript">
+        <img src="assets/icons/wc.svg" alt="JavaScript">        
+        <img src="assets/icons/canvas.svg" alt="Canvas API">
+      </div>
+    </div>
+
+    <div class="card" data-video="videos/trabajapp.mp4">
+      <img class="thumbnail" src="assets/trabajapp.png" alt="Miniatura Proyecto 3">
+      <h2>Trabajapp</h2>
+      <p>Desarrollado por: E. Rodriguez</p>
+      <p>TrabajAPP es una plataforma que permite a las personas profesionales de diferentes oficios (Gasistas, Plomeros, Cerrajeros, etc..) ofrecer sus servicios de reparación y/o solución de inconvenientes a personas particulares. Las personas particulares publican su inconveniente con su posicionamiento geográfico y los trabajadores socios de la aplicación ofertan para tomar el trabajo. Trabaja con un sistema de calificaciones, retroalimentación de confianza, gestión de reclamos y garantías.
+
+        <br><br>Tecnologías: WebComponentsJS, JavaScript, Node.js, SQL</p>
+     <div class="tech-icons">
+        <img src="assets/icons/javascript.svg" alt="JavaScript">
+          <img src="assets/icons/wc.svg" alt="JavaScript">
+        <img src="assets/icons/html5.svg" alt="HTML5">
+        <img src="assets/icons/css3.svg" alt="CSS3">
+        <img src="assets/icons/db.svg" alt="CSS3">
+      </div>
+    </div>
+
+      <div class="card" data-video="videos/ppt2.mp4">
+      <img class="thumbnail" src="assets/ppt.png" alt="Miniatura Proyecto 3">
+      <h2>Piedra, Papel y Tijeras</h2>
+      <p>Desarrollado por: A. Acuña, J. Nuñez, M. Torres</p>
+      <p>Piedra, Papel y Tijeras es un vistoso videojuego 2D, online y multijugador construído con tecnologías web nativas desde cero en su totalidad. Es una recreación del clásico juego pero con una variante personalizada en donde cada jugador efectúa "spawns" de la opción piedra, papel o tijera que ataca directamente al enemigo. Posee salas de de juego en donde los jugadores pueden encontrarse y desafiar a rivales en tiempo real sin latencia.
+      <br><br>Tecnologías: WebComponentsJS, WebSockets, Canvas2D, Node.JS</p>
+      <div class="tech-icons">
+         <img src="assets/icons/javascript.svg" alt="JavaScript">
+        <img src="assets/icons/wc.svg" alt="JavaScript">        
+        <img src="assets/icons/canvas.svg" alt="Canvas API">
+      </div>
+    </div>
+
+
+
+    <div class="card" data-video="videos/trueque.mp4">
+      <img class="thumbnail" src="assets/truequelibre.png" alt="Miniatura Proyecto 2">
+      <h2>TruequeLibre</h2>
+      <p>Desarrollado por: M. Borgui, T. Guerstein</p>
+      <p>TruequeLibre es una plataforma de comercialización sin dinero, basada en la economía de trueque, orientada a fomentar la economía circular, la sostenibilidad y sustentabilidad como así también posibilitar el acceso a productos y servicios en personas de nulos o bajos ingresos. El sistema de intercambio se basa en un modelo de acuerdos por compatibilidad de intereses e intercambio de mensajes por chat integrado en la misma plataforma.
+         <br><br>
+      Tecnologías: WebComponentsJS, WebSockets, CSS, Node.JS, SQL
+      </p>
+      </p>
+      <div class="tech-icons">
+        <img src="assets/icons/javascript.svg" alt="JavaScript">
+          <img src="assets/icons/wc.svg" alt="JavaScript">
+        <img src="assets/icons/html5.svg" alt="HTML5">
+        <img src="assets/icons/css3.svg" alt="CSS3">
+        <img src="assets/icons/db.svg" alt="CSS3">
+      </div>
+    </div>
+
+     <div class="card" data-video="videos/caminocomun.mp4">
+      <img class="thumbnail" src="assets/caminocomun.png" alt="Miniatura Proyecto 3">
+      <h2>CaminoComún</h2>
+      <p>Desarrollado por: E. Rodríguez</p>
+      <p>Camino común es una plataforma de servicios de transporte comunitario constituída por socios de la aplicación. Permite reducir costos de transporte por medio de viajes compartidos y paradas intermedias. Está pensada para facilitar las posibilidades de transporte en localidades en donde no existen colectivos, sus frecuencias son muy bajas o los transportes particulares y/o servicios de otras aplicaciones resultan costosos.
+        <br><br>Tecnologías: WebComponentsJS, JavaScript, Node.js, SQL</p>
+      <div class="tech-icons">
+        <img src="assets/icons/javascript.svg" alt="JavaScript">
+          <img src="assets/icons/wc.svg" alt="JavaScript">
+        <img src="assets/icons/html5.svg" alt="HTML5">
+        <img src="assets/icons/css3.svg" alt="CSS3">
+        <img src="assets/icons/db.svg" alt="CSS3">
+      </div>
+    </div>
+
+     <div class="card" data-video="videos/olasapp.mp4">
+      <img class="thumbnail" src="assets/olasapp.png" alt="Miniatura Proyecto 3">
+      <h2>OlasApp</h2>
+      <p>Desarrollado por: J. Haag, B. Lizaso</p>
+      <p>OlasApp se trata de un sistema de construcción de reportes inteligentes para surfistas. Se constituye como una aplicación de tipo web pero también como un servicio de API integrable para su inserción en aplicaciones de terceros. Esta aplicación permite que los surfistas puedan según información metereológica compleja analizar mediante IA las mejores condiciones de surf según los spots geográficos que se deseen.
+        <br><br>Tecnologías: WebComponentsJS, TypeScript, SQL, Gemini</p>
+      <div class="tech-icons">
+        <img src="assets/icons/javascript.svg" alt="JavaScript">
+          <img src="assets/icons/wc.svg" alt="JavaScript">
+        <img src="assets/icons/html5.svg" alt="HTML5">
+        <img src="assets/icons/css3.svg" alt="CSS3">
+        <img src="assets/icons/db.svg" alt="CSS3">
+      </div>
+    </div>
+
+     <div class="card" data-video="videos/mismoldes.mp4">
+      <img class="thumbnail" src="assets/mismoldes.png" alt="Miniatura Proyecto 3">
+      <h2>Mis Moldes</h2>
+      <p>Desarrollado por: V. Ramadori, H. Otalora</p>
+      <p>MisMoldes es una aplicación web colaborativa en tiempo real que permite a diseñadores textiles y/o indumentaria, construir sus sistemas de moldería para una colección textil. Esta aplicación le permite a los profesionales del área a confeccionar tizadas optimizadas para la producción industrial.
+        <br><br>Tecnologías: WebComponentsJS, JavaScript, Canvas2D, SVG, SQL</p>
+      <div class="tech-icons">
+        <img src="assets/icons/javascript.svg" alt="JavaScript">
+        <img src="assets/icons/wc.svg" alt="JavaScript">        
+        <img src="assets/icons/canvas.svg" alt="Canvas API">
+      </div>
+    </div>
+
+
+     <div class="card" data-video="videos/spotrivia.mp4">
+      <img class="thumbnail" src="assets/spotrivia.png" alt="Miniatura Proyecto 1">
+      <h2>Spotrivia</h2>
+      <p>Desarrollado por: J.M Atadia, M. Fosque, E. Vallejos</p>
+      <p>Spotrivia es un videojuego de tipo trivia en línea, en donde a través del consumo de la API de Spotify se extrae un fragmento de canción y se invita a los jugadores en tiempo real a seleccionar la opción correcta con un límite de tiempo. La arquitectura del proyecto está pensada también para ser utilizada como recurso educativo interactivo y ofrece posibilidades de personalización para estos fines.
+        
+      <p>Tecnologías: WebComponentsJS, WebSockets, HTML/CSS, Python</p>
+      
+      </p>
+      <div class="tech-icons">
+        <img src="assets/icons/python.svg" alt="Java">
+        <img src="assets/icons/javascript.svg" alt="JavaScript">
+          <img src="assets/icons/wc.svg" alt="JavaScript">
+        <img src="assets/icons/html5.svg" alt="HTML5">
+        <img src="assets/icons/css3.svg" alt="CSS3">
+      </div>
+    </div>
+
+     <div class="card" data-video="videos/rescatepet.mp4">
+      <img class="thumbnail" src="assets/rescatepet.png" alt="Miniatura Proyecto 1">
+      <h2>RescatePet</h2>
+      <p>Desarrollado por: V. Tiberio, M. Lapenta</p>
+      <p>RescatePet es una plataforma en desarrollo que ofrece servicios para la localización de mascotas perdidas y en tránsito para fomentar la adopción responsable. Permite el registro de personas particulares como de asociaciones dedicadas a esta función. Posibilita configurar criterios a satisfacer para aprobar una adopción según la organización.
+      <p>Tecnologías: WebComponentsJS, HTML/CSS, Python</p>
+      
+      </p>
+      <div class="tech-icons">
+        <img src="assets/icons/python.svg" alt="Java">
+        <img src="assets/icons/javascript.svg" alt="JavaScript">
+          <img src="assets/icons/wc.svg" alt="JavaScript">
+        <img src="assets/icons/html5.svg" alt="HTML5">
+        <img src="assets/icons/css3.svg" alt="CSS3">
+      </div>
+    </div>
+
+    <div class="card" data-video="videos/reciya.mp4">
+      <img class="thumbnail" src="assets/reciya.png" alt="Miniatura Proyecto 1">
+      <h2>Reci-Ya!</h2>
+      <p>Desarrollado por: A. Scornaienchi, A. Cantuer</p>
+      <p>Reci-Ya! Es una aplicación que permite administrar stocks de alimentos y construir recetas con las posibilidades que éstos habilitan. Expone una interfaz interactiva enriquecida por medio de texto y voz. Uno de sus valores agregados es que permite la construcción de un perfil alimentario adecuado a las necesidades individuales: Celiaquía, Tratamiento de colesterol, Veganismo, Vegetarianismo, etc.
+            <p>Tecnologías: WebComponentsJS, HTML/CSS, Python</p>
+      
+      </p>
+      <div class="tech-icons">
+        <img src="assets/icons/python.svg" alt="Java">
+        <img src="assets/icons/javascript.svg" alt="JavaScript">
+          <img src="assets/icons/wc.svg" alt="JavaScript">
+        <img src="assets/icons/html5.svg" alt="HTML5">
+        <img src="assets/icons/css3.svg" alt="CSS3">
+      </div>
+    </div>
+
+     <div class="card" type="tab">
+      <img class="thumbnail" src="assets/pixelmayhem.png" alt="Miniatura Proyecto 1">
+      <h2>Pixel Mech Mayhem</h2>
+      <p>Desarrollado por: M. Liberatore</p>
+      <p>Pixel Mech Mayhem es un prototipo de videojuego con estilo Pixel-Art construído completamente desde cero empleando tecnologías web nativas compatibles con cualquier navegador actual. Se trata de un proyecto personal inspirado en una actividad desarrollada en las Prácticas Profesionalizantes III en el contexto de formación respecto a manipulación de gráficos 2D. 
+        
+      <p>Tecnologías: JavaScript, Canvas2D, HTML/CSS</p>
+      
+      </p>
+      <div class="tech-icons">
+        <img src="assets/icons/javascript.svg" alt="JavaScript">
+        <img src="assets/icons/html5.svg" alt="HTML5">
+        <img src="assets/icons/css3.svg" alt="CSS3">
+      </div>
+    </div>
+
+    <div class="card" data-video="videos/telegrambot.mp4">
+      <img class="thumbnail" src="assets/telegrambot.png" alt="Miniatura Proyecto 3">
+      <h2>ISFT TelegramBot</h2>
+      <p>Desarrollado por: S. Genevrino</p>
+      <p>ISFT TelegramBot es un prototipo de bot de gestión que tiene como propósito resolver las necesidades de estudiantes con respecto a las inscripciones a mesas de final de las diferentes materias de las carreras que se dictan. Cada estudiante con una cuenta en Telegram puede crear su usuario institucional y acceder a opciones de consulta. Emite comprobantes de gestión y permite monitorear el estado de las solicitudes a preceptoría.
+
+        <br><br>Tecnologías: TelegramBotAPI, Python, MySQL</p>
+      <div class="tech-icons">
+        <img src="assets/icons/python.svg" alt="Java">
+       <img src="assets/icons/javascript.svg" alt="JavaScript">
+               <img src="assets/icons/db.svg" alt="CSS3">
+      </div>
+    </div>
+
+    <div class="card" data-video="videos/demo3.mp4">
+      <img class="thumbnail" src="assets/chatbot.png" alt="Miniatura Proyecto 3">
+      <h2>ISFT WebChatBot</h2>
+      <p>Desarrollado por: F. Caminos F, W. López, C. Beinat</p>
+      <p>ISFTWebChatBot es un prototipo de chat automatizado para la web de la institución ISFT Nº151 que tiene como propósito asistir al proceso de inscripción a carreras. Su propósito es consultar al interesado/a toda la información que necesita para conformar una preinscripción que luego puede ser utilizada por el personal administrativo correspondiente. También posibilita la creación de un usuario dentro del sitio y derivar atención personalizada.
+      <br><br>Tecnologías: WebComponentsJS, HTML/CSS, Node.JS, MySQL, MongoDB
+      </p>
+      <div class="tech-icons">
+        <img src="assets/icons/javascript.svg" alt="JavaScript">
+          <img src="assets/icons/wc.svg" alt="JavaScript">
+        <img src="assets/icons/html5.svg" alt="HTML5">
+        <img src="assets/icons/css3.svg" alt="CSS3">
+        <img src="assets/icons/db.svg" alt="CSS3">
+      </div>
+    </div>
+
+
+         <div class="card" data-video="videos/demo3.mp4">
+      <img class="thumbnail" src="assets/cloud.png" alt="Miniatura Proyecto 3">
+      <h2>ISFT CloudServices</h2>
+      <p>Desarrollado por: M. Roca, S. Pili, A. Capurro, M. Marquez</p>
+      <p>ISFT CloudServices es un sistema de almacenamiento de tipo en la nube que tiene como propósito introducir a los estudiantes a comprender cómo se construye una API de servicios que puede ser componentizable dentro de una arquitectura distribuída cliente-servidor. El servicio de almacenamiento permite a usuarios registrados, acceder a una cuota de almacenamiento y trabajar subiendo y descargando archivos y carpetas. Este tipo de componentes son utilizados en muchos sistemas en donde se requiere que los usuarios puedan manipular su información y compartirla con otros miembros de la organización.
+
+        <br><br>Tecnologías: WebComponentsJS, Node.JS, REST, MongoDB, MySQL</p>
+      <div class="tech-icons">
+        <img src="assets/icons/javascript.svg" alt="JavaScript">
+        <img src="assets/icons/wc.svg" alt="JavaScript">
+       <img src="assets/icons/html5.svg" alt="HTML5">
+        <img src="assets/icons/css3.svg" alt="CSS3">
+         <img src="assets/icons/db.svg" alt="CSS3">
+      </div>
+    </div>
+
+    
+
+          <div class="card" data-video="videos/demo3.mp4">
+      <img class="thumbnail" src="assets/acc.png" alt="Miniatura Proyecto 3">
+      <h2>Control Access Component</h2>
+      <p>Desarrollado por: K. Taylor, M. Roca</p>
+      <p>Control Access Component es un módulo para el desarrollo de sistemas que permite resolver los mecanismos de autenticación de usuario, sesión y autorización de acceso a diferentes API's de tipo REST. Este componente es indispensable para el desarrollo de sistemas de arquitectura distribuída cliente-servidor basado en HTTP/S.
+
+        <br><br>Tecnologías: WebComponentsJS, Node.JS, REST, SQL</p>
+      <div class="tech-icons">
+        <img src="assets/icons/javascript.svg" alt="JavaScript">
+        <img src="assets/icons/wc.svg" alt="JavaScript">
+       <img src="assets/icons/html5.svg" alt="HTML5">
+        <img src="assets/icons/css3.svg" alt="CSS3">
+         <img src="assets/icons/db.svg" alt="CSS3">
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="modal hidden" id="modal">
+    <button class="close-btn">&times;</button>
+    <video controls autoplay></video>
+  </div>
+
+
+
+  <script>
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, i) => 
+    {
+      setTimeout(() => card.classList.add('visible'), i * 200);
+    });
+
+    const modal = document.getElementById("modal");
+
+    const modalVideo = modal.querySelector("video");
+
+    const closeBtn = modal.querySelector(".close-btn");
+    
+
+    document.querySelectorAll(".card").forEach(card => 
+    {
+      card.addEventListener("click", () => 
+      {
+          if( card.getAttribute("type") != "tab" )
+          {
+
+            const videoSrc = card.dataset.video;
+            modalVideo.src = videoSrc;
+            modal.classList.remove("hidden");
+          }
+          else
+          {
+            window.open("https://mateoliberatore.github.io/Pixel-Mech-Mayhem/","_blank")
+          }
+      });
+    });
+
+    closeBtn.addEventListener("click", () => 
+    {
+      modal.classList.add("hidden");
+     
+      modalVideo.pause();
+      modalVideo.src = "";
+    });
+  </script>
+
+</body>
+</html>
